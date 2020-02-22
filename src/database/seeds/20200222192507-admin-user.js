@@ -1,18 +1,21 @@
+const bcrypt = require('bcryptjs');
+
 module.exports = {
-  up: (queryInterface, Sequelize) => {
-    return queryInterface.bulkInsert(
-      'People',
+  up: QueryInterface => {
+    return QueryInterface.bulkInsert(
+      'users',
       [
         {
-          name: 'John Doe',
-          isBetaMember: false
+          name: 'Distribuidora FastFeet',
+          email: 'admin@fastfeet.com',
+          password_hash: bcrypt.hashSync('123456', 8),
+          created_at: new Date(),
+          updated_at: new Date()
         }
       ],
       {}
     );
   },
 
-  down: (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete('People', null, {});
-  }
+  down: () => {}
 };
