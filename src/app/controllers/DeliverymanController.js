@@ -40,7 +40,7 @@ class DeliverymanController {
     const deliveryman = await Deliveryman.findByPk(deliveryman_id);
 
     if (!deliveryman) {
-      return res.status(404).json({ error: 'Deliveryman is not found' });
+      return res.status(404).json({ error: 'Deliveryman not found' });
     }
 
     const schema = Yup.object().shape({
@@ -61,7 +61,7 @@ class DeliverymanController {
     const deliveryman = await Deliveryman.findByPk(deliveryman_id);
 
     if (!deliveryman) {
-      return res.status(404).json({ error: 'Deliveryman is not found' });
+      return res.status(404).json({ error: 'Deliveryman not found' });
     }
 
     await deliveryman.destroy();
