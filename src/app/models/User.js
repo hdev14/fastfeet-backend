@@ -18,6 +18,8 @@ class User extends Sequelize.Model {
         user.password_hash = await bcrypt.hash(user.password, 8);
       }
     });
+
+    return this;
   }
 
   checkPassword(password) {
