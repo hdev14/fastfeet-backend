@@ -36,7 +36,7 @@ class DelivererController {
 
     const schema = Yup.object().shape({
       name: Yup.string(),
-      email: Yup.string()
+      email: Yup.string().email()
     });
 
     if (!(await schema.isValid(req.body))) {
