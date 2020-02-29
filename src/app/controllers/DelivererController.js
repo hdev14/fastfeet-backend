@@ -1,10 +1,20 @@
 import * as Yup from 'yup';
 
 import Deliverer from '../models/Deliverer';
+import File from '../models/File';
 
 class DelivererController {
   async index(req, res) {
-    const deliverers = await Deliverer.findAll();
+    const deliverers = await Deliverer.findAll({
+      attributes: ['id', 'name', 'avatar_id'],
+      include: [
+        {
+          model: File,
+          as: 'avatar',
+          attributes: ['name', 'path']
+        }
+      ]
+    });
     return res.json(deliverers);
   }
 
@@ -20,10 +30,9 @@ class DelivererController {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
-    const { name, email } = req.body;
-    const deliverer = await Deliverer.create({ name, email });
+    const { id, name, email } = await Deliverer.create(req.body);
 
-    return res.json(deliverer);
+    return res.json({ id, name, email });
   }
 
   async update(req, res) {
