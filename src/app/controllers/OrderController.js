@@ -11,7 +11,6 @@ import File from '../models/File';
 class OrderController {
   async index(req, res) {
     const orders = await Order.findAll({
-      where: { canceled_at: null, end_date: null },
       attributes: ['id', 'product', 'start_date'],
       include: [
         {
