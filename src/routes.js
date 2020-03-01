@@ -20,7 +20,10 @@ const upload = multer(multerConfig);
 routes.post('/sessions', SessionController.store);
 
 routes.get('/deliveryman/:id/deliveries', DeliveriesController.index);
-routes.put('/deliveryman/:id/deliveries', DeliveriesController.update);
+routes.put(
+  '/deliveryman/:id/deliveries/:order_id',
+  DeliveriesController.update
+);
 
 routes.use(auth);
 
