@@ -22,6 +22,7 @@ routes.post('/sessions', SessionController.store);
 routes.get('/deliveryman/:id/deliveries', DeliveriesController.index);
 routes.put(
   '/deliveryman/:id/deliveries/:order_id',
+  upload.single('file'),
   DeliveriesController.update
 );
 
