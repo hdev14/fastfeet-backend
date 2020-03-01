@@ -1,11 +1,11 @@
 import * as Yup from 'yup';
 
-import Deliverer from '../models/Deliverer';
+import Deliveryman from '../models/Deliveryman';
 import File from '../models/File';
 
-class DelivererController {
+class DeliverymanController {
   async index(req, res) {
-    const deliverers = await Deliverer.findAll({
+    const deliverymans = await Deliveryman.findAll({
       attributes: ['id', 'name', 'avatar_id'],
       include: [
         {
@@ -15,7 +15,7 @@ class DelivererController {
         }
       ]
     });
-    return res.json(deliverers);
+    return res.json(deliverymans);
   }
 
   async store(req, res) {
@@ -30,17 +30,17 @@ class DelivererController {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
-    const { id, name, email } = await Deliverer.create(req.body);
+    const { id, name, email } = await Deliveryman.create(req.body);
 
     return res.json({ id, name, email });
   }
 
   async update(req, res) {
-    const deliverer_id = req.params.id;
-    const deliverer = await Deliverer.findByPk(deliverer_id);
+    const deliveryman_id = req.params.id;
+    const deliveryman = await Deliveryman.findByPk(deliveryman_id);
 
-    if (!deliverer) {
-      return res.status(404).json({ error: 'Deliverer not found' });
+    if (!deliveryman) {
+      return res.status(404).json({ error: 'Deliveryman not found' });
     }
 
     const schema = Yup.object().shape({
@@ -52,22 +52,22 @@ class DelivererController {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
-    const { id, name, email } = await deliverer.update(req.body);
+    const { id, name, email } = await Deliveryman.update(req.body);
     return res.json({ id, name, email });
   }
 
   async delete(req, res) {
-    const deliverer_id = req.params.id;
-    const deliverer = await Deliverer.findByPk(deliverer_id);
+    const deliveryman_id = req.params.id;
+    const deliveryman = await Deliveryman.findByPk(deliveryman_id);
 
-    if (!deliverer) {
-      return res.status(404).json({ error: 'Deliverer not found' });
+    if (!deliveryman) {
+      return res.status(404).json({ error: 'Deliveryman not found' });
     }
 
-    await deliverer.destroy();
+    await deliveryman.destroy();
 
     return res.send();
   }
 }
 
-export default new DelivererController();
+export default new DeliverymanController();
