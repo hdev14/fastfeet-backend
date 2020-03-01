@@ -3,6 +3,7 @@ import { isBefore, isAfter, setSeconds, setMinutes, setHours } from 'date-fns';
 
 import Order from '../models/Order';
 import Recipient from '../models/Recipient';
+import File from '../models/File';
 
 class DeliveriesController {
   async index(req, res) {
@@ -28,6 +29,11 @@ class DeliveriesController {
             'city',
             'cep'
           ]
+        },
+        {
+          model: File,
+          as: 'signature',
+          attributes: ['name', 'path', 'url']
         }
       ],
       attributes: ['id', 'product', 'canceled_at'],
@@ -51,7 +57,27 @@ class DeliveriesController {
         id: order_id,
         deliveryman_id: id,
         canceled_at: null
-      }
+      },
+      include: [
+        {
+          model: Recipient,
+          as: 'recipient',
+          attributes: [
+            'name',
+            'street',
+            'number',
+            'complement',
+            'state',
+            'city',
+            'cep'
+          ]
+        },
+        {
+          model: File,
+          as: 'signature',
+          attributes: ['name', 'path', 'url']
+        }
+      ]
     });
 
     if (!order) {
@@ -66,7 +92,7 @@ class DeliveriesController {
         0
       );
       const withdrawalEndDate = setSeconds(
-        setMinutes(setHours(currentDate, 18), 0),
+        setMinutes(setHours(currentDate, 23), 0),
         0
       );
       const isValidDate =
@@ -96,6 +122,14 @@ class DeliveriesController {
 
       order.start_date = currentDate;
     } else if (op === 'end') {
+      if (!req.file) {
+        return res.status(400).json({ error: 'Signature is required' });
+      }
+
+      const { originalname: name, filename: path } = req.file;
+      const signature = await File.create({ name, path });
+
+      order.signature_id = signature.id;
       order.end_date = currentDate;
     }
 
