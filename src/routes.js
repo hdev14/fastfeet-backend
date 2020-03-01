@@ -19,24 +19,23 @@ const upload = multer(multerConfig);
 
 routes.post('/sessions', SessionController.store);
 
+routes.get('/deliveryman/:id/deliveries', DeliveriesController.index);
+routes.put('/deliveryman/:id/deliveries', DeliveriesController.update);
+
 routes.use(auth);
 
 routes.post('/recipients', RecipientController.store);
 routes.put('/recipients/:id', RecipientController.update);
 
-routes.get('/deliverers', DeliverymanController.index);
-routes.post('/deliverers', DeliverymanController.store);
-routes.put('/deliverers/:id', DeliverymanController.update);
-routes.delete('/deliverers/:id', DeliverymanController.delete);
+routes.get('/deliveryman', DeliverymanController.index);
+routes.post('/deliveryman', DeliverymanController.store);
+routes.put('/deliveryman/:id', DeliverymanController.update);
+routes.delete('/deliveryman/:id', DeliverymanController.delete);
 
 routes.get('/orders', OrderController.index);
 routes.post('/orders', OrderController.store);
 routes.put('/orders/:id', OrderController.update);
 routes.delete('/orders/:id', OrderController.delete);
-
-routes.get('/deliverers/:id/deliveries', DeliveriesController.index);
-routes.post('/deliverers/:id/deliveries', DeliveriesController.store);
-routes.put('/deliverers/:id/deliveries', DeliveriesController.update);
 
 routes.post('/files', upload.single('file'), FileController.store);
 
