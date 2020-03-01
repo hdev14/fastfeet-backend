@@ -5,7 +5,9 @@ class NewDelivery {
     return 'NewDelivery';
   }
 
-  async handler({ to, context }) {
+  async handler({ data }) {
+    const { to, context } = data;
+
     await Mail.sendMail({
       to,
       subject: 'Nova entrega',

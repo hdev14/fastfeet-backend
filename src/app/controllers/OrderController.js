@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
 
-import Mail from '../../lib/Mail';
+import Queue from '../../lib/Queue';
+import NewDelivery from '../jobs/NewDelevery';
 
 import Order from '../models/Order';
 import Recipient from '../models/Recipient';
@@ -68,12 +69,9 @@ class OrderController {
       cep
     } = await Recipient.findByPk(recipient_id);
 
-    await Mail.sendMail({
+    await Queue.addJob(NewDelivery.key, {
       to: `${name} <${email}>`,
-      subject: 'Nova entrega',
-      template: 'new-delivery',
       context: {
-        product,
         name: destinatary_name,
         street,
         number,
