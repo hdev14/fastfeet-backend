@@ -58,11 +58,30 @@ class OrderController {
     );
 
     const { name, email } = await Deliveryman.findByPk(deliveryman_id);
+    const {
+      name: destinatary_name,
+      street,
+      number,
+      complement,
+      state,
+      city,
+      cep
+    } = await Recipient.findByPk(recipient_id);
 
     await Mail.sendMail({
       to: `${name} <${email}>`,
       subject: 'Nova entrega',
-      text: `Novo item disponível para retirada.`
+      template: 'new-delivery',
+      context: {
+        product,
+        name: destinatary_name,
+        street,
+        number,
+        complement,
+        state,
+        city,
+        cep
+      }
     });
 
     return res.json({ id, recipient_id, deliveryman_id, product });
