@@ -1,5 +1,7 @@
 import * as Yup from 'yup';
 
+import Mail from '../../lib/Mail';
+
 import Order from '../models/Order';
 import Recipient from '../models/Recipient';
 import Deliveryman from '../models/Deliveryman';
@@ -54,6 +56,14 @@ class OrderController {
     const { id, recipient_id, deliveryman_id, product } = await Order.create(
       req.body
     );
+
+    const { name, email } = await Deliveryman.findByPk(deliveryman_id);
+
+    await Mail.sendMail({
+      to: `${name} <${email}>`,
+      subject: 'Nova entrega',
+      text: `Novo item disponível para retirada.`
+    });
 
     return res.json({ id, recipient_id, deliveryman_id, product });
   }
