@@ -8,29 +8,33 @@ const jobs = [NewDelivery];
 
 class Queue {
   constructor() {
-    this.queues = {};
+    this.queues = [];
     this.init();
   }
 
   init() {
-    jobs.forEach(({ key, handler }) => {
+    jobs.forEach(({ key }) => {
       this.queues[key] = {
         bee: new Bee(key, {
           redis: redisConfig
-        }),
-        handler
+        })
       };
     });
   }
 
-  add(queue, data) {
-    this.queues[queue].createJob(data).save();
+  addJob(queue, data) {
+    this.queues[queue].bee.createJob(data).save();
   }
 
-  processJobs() {
-    this.queues.forEach(({ bee, handler }) => {
-      bee.process(handler);
+  processQueue() {
+    jobs.forEach(job => {
+      const { bee } = this.queues[job.key];
+      bee.on('failed', this.handlerFailure).process(job.handler);
     });
+  }
+
+  handlerFailure(err) {
+    console.log(`QUEUE FAILED: ${err}`);
   }
 }
 
