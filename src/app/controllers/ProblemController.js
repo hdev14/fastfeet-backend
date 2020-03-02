@@ -1,5 +1,9 @@
 import DeliveryProblem from '../models/DeliveryProblem';
 import Order from '../models/Order';
+import Deliveryman from '../models/Deliveryman';
+
+import CancelDelivery from '../jobs/CancelDelivery';
+import Queue from '../../lib/Queue';
 
 class ProblemController {
   async delete(req, res) {
@@ -14,6 +18,15 @@ class ProblemController {
 
     order.canceled_at = new Date();
     order.save();
+
+    const { name, email } = await Deliveryman.findByPk(order.deliveryman_id);
+    await Queue.addJob(CancelDelivery.key, {
+      to: `${name} <${email}>`,
+      context: {
+        name,
+        product: order.product
+      }
+    });
 
     return res.json();
   }
