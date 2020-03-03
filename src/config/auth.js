@@ -1,5 +1,6 @@
+require('dotenv/config');
+
 module.exports = {
-  secreteKey:
-    'b906c82d887d4c223c9b10a418b02a20a72768b7c140cee1b04287ac7375f9e0',
+  secreteKey: process.env.SECRET_KEY,
   expiresIn: '7d'
 };
