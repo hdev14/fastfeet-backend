@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+import { Op } from 'sequelize';
 
 import Queue from '../../lib/Queue';
 import NewDelivery from '../jobs/NewDelivery';
@@ -10,7 +11,15 @@ import File from '../models/File';
 
 class OrderController {
   async index(req, res) {
+    const { q } = req.query;
+    const filter = q || '';
+
     const orders = await Order.findAll({
+      where: {
+        product: {
+          [Op.iLike]: `${filter}%`
+        }
+      },
       attributes: ['id', 'product', 'start_date'],
       include: [
         {
