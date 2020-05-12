@@ -2,4 +2,4 @@ import 'dotenv/config';
 
 import server from './app';
 
-server.listen(3000);
+server.listen(process.env.APP_PORT || 3333);
