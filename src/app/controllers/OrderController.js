@@ -51,6 +51,17 @@ class OrderController {
     return res.json(orders);
   }
 
+  async show(req, res) {
+    const { id } = req.params;
+    const order = await Order.findByPk(id);
+    
+    if (!order) {
+      return res.status(404).json({ error: 'Order does not exits' });
+    }
+
+    return res.status(200).json(order);
+  }
+  
   async store(req, res) {
     const schema = Yup.object().shape({
       recipient_id: Yup.number().integer(),
