@@ -15,7 +15,7 @@ class DeliverymanController {
           [Op.iLike]: `${filter}%`
         }
       },
-      attributes: ['id', 'name', 'avatar_id'],
+      attributes: ['id', 'name', 'email', 'avatar_id'],
       include: [
         {
           model: File,

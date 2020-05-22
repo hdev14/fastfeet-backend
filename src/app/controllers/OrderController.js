@@ -38,7 +38,14 @@ class OrderController {
         {
           model: Deliveryman,
           as: 'deliveryman',
-          attributes: ['name', 'email']
+          attributes: ['name', 'email'],
+	  include: [
+	    {
+	      model: File,
+	      as: 'avatar',
+	      attributes: ['name', 'path', 'url'],
+	    }
+	  ],
         },
         {
           model: File,
