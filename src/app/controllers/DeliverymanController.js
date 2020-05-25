@@ -26,16 +26,16 @@ class DeliverymanController {
     });
     return res.json(deliverymans);
   }
-  
+
   async show(req, res) {
     const deliveryman_id = req.params.id;
     const deliveryman = await Deliveryman.findByPk(deliveryman_id);
     if (!deliveryman) {
-      return res.status(404).json({ error: "Deliveryman doesn't exist"});
+      return res.status(404).json({ error: "Deliveryman doesn't exist" });
     }
     return res.json(deliveryman);
   }
-  
+
   async store(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string().required(),
