@@ -70,7 +70,7 @@ class DeliverymanController {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
-    const { id, name, email } = await Deliveryman.update(req.body);
+    const { id, name, email } = await deliveryman.update(req.body);
     return res.json({ id, name, email });
   }
 
