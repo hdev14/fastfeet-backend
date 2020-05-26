@@ -20,7 +20,7 @@ class OrderController {
           [Op.iLike]: `${filter}%`
         }
       },
-      attributes: ['id', 'product', 'start_date', 'end_date'],
+      attributes: ['id', 'product', 'start_date', 'end_date', 'canceled_at'],
       include: [
         {
           model: Recipient,
