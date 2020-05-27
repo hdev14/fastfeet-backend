@@ -6,6 +6,19 @@ import CancelDelivery from '../jobs/CancelDelivery';
 import Queue from '../../lib/Queue';
 
 class ProblemController {
+  async index(req, res) {
+    const problems = await DeliveryProblem.findAll({
+      include: [
+        {
+          model: Order,
+          as: 'orders',
+          attributes: ['id']
+        }
+      ]
+    });
+    return res.json(problems);
+  }
+
   async delete(req, res) {
     const { problem_id } = req.params;
     const problem = await DeliveryProblem.findByPk(problem_id);
