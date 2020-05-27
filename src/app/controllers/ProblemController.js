@@ -12,7 +12,7 @@ class ProblemController {
         {
           model: Order,
           as: 'orders',
-          attributes: ['id']
+          attributes: ['id', 'canceled_at']
         }
       ]
     });
