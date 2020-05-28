@@ -40,8 +40,10 @@ routes.delete(
 routes.use(auth);
 
 routes.get('/recipients', RecipientController.index);
+routes.get('/recipients/:id', RecipientController.show);
 routes.post('/recipients', RecipientController.store);
 routes.put('/recipients/:id', RecipientController.update);
+routes.delete('/recipients/:id', RecipientController.destroy);
 
 routes.get('/deliveryman', DeliverymanController.index);
 routes.get('/deliveryman/:id', DeliverymanController.show);
