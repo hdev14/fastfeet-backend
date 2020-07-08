@@ -5,12 +5,14 @@ import multerConfig from './config/multer';
 
 // MIDDLEWARES
 import auth from './app/middlewares/auth';
+import findDeliveryman from './app/middlewares/find-deliveryman';
 
 // VALIDATORS
 import SessionValidator from './app/validators/SessionValidator';
 import RecipientValidator from './app/validators/RecipientValidator';
 import OrderValidator from './app/validators/OrderValidator';
 import DeliveryProblemValidator from './app/validators/DeliveryProblemValidator';
+import DeliverymanValidator from './app/validators/DeliverymanValidator';
 
 // CONTROLLERS
 import SessionController from './app/controllers/SessionController';
@@ -60,10 +62,23 @@ routes.put(
 routes.delete('/recipients/:id', RecipientController.destroy);
 
 routes.get('/deliveryman', DeliverymanController.index);
-routes.get('/deliveryman/:id', DeliverymanController.show);
-routes.post('/deliveryman', DeliverymanController.store);
-routes.put('/deliveryman/:id', DeliverymanController.update);
-routes.delete('/deliveryman/:id', DeliverymanController.delete);
+routes.get('/deliveryman/:id', findDeliveryman, DeliverymanController.show);
+routes.post(
+  '/deliveryman',
+  DeliverymanValidator.store,
+  DeliverymanController.store
+);
+routes.put(
+  '/deliveryman/:id',
+  findDeliveryman,
+  DeliverymanValidator.update,
+  DeliverymanController.update
+);
+routes.delete(
+  '/deliveryman/:id',
+  findDeliveryman,
+  DeliverymanController.delete
+);
 
 routes.get('/orders', OrderController.index);
 routes.get('/orders/:id', OrderController.show);
