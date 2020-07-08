@@ -1,4 +1,3 @@
-import * as Yup from 'yup';
 import { Op } from 'sequelize';
 
 import Deliveryman from '../models/Deliveryman';
@@ -28,62 +27,22 @@ class DeliverymanController {
   }
 
   async show(req, res) {
-    const deliveryman_id = req.params.id;
-    const deliveryman = await Deliveryman.findByPk(deliveryman_id);
-    if (!deliveryman) {
-      return res.status(404).json({ error: "Deliveryman doesn't exist" });
-    }
-    return res.json(deliveryman);
+    return res.json(req.deliveryman);
   }
 
   async store(req, res) {
-    const schema = Yup.object().shape({
-      name: Yup.string().required(),
-      email: Yup.string()
-        .email()
-        .required()
-    });
-
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails' });
-    }
-
     const { id, name, email } = await Deliveryman.create(req.body);
 
     return res.json({ id, name, email });
   }
 
   async update(req, res) {
-    const deliveryman_id = req.params.id;
-    const deliveryman = await Deliveryman.findByPk(deliveryman_id);
-
-    if (!deliveryman) {
-      return res.status(404).json({ error: 'Deliveryman not found' });
-    }
-
-    const schema = Yup.object().shape({
-      name: Yup.string(),
-      email: Yup.string().email()
-    });
-
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails' });
-    }
-
-    const { id, name, email } = await deliveryman.update(req.body);
+    const { id, name, email } = await req.deliveryman.update(req.body);
     return res.json({ id, name, email });
   }
 
   async delete(req, res) {
-    const deliveryman_id = req.params.id;
-    const deliveryman = await Deliveryman.findByPk(deliveryman_id);
-
-    if (!deliveryman) {
-      return res.status(404).json({ error: 'Deliveryman not found' });
-    }
-
-    await deliveryman.destroy();
-
+    await req.deliveryman.destroy();
     return res.send();
   }
 }
