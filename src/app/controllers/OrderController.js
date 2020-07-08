@@ -70,16 +70,6 @@ class OrderController {
   }
 
   async store(req, res) {
-    const schema = Yup.object().shape({
-      recipient_id: Yup.number().integer(),
-      deliveryman_id: Yup.number().integer(),
-      product: Yup.string().required()
-    });
-
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails' });
-    }
-
     const { id, recipient_id, deliveryman_id, product } = await Order.create(
       req.body
     );
@@ -112,16 +102,6 @@ class OrderController {
   }
 
   async update(req, res) {
-    const schema = Yup.object().shape({
-      recipient_id: Yup.number().integer(),
-      deliveryman_id: Yup.number().integer(),
-      product: Yup.string()
-    });
-
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails' });
-    }
-
     const order = await Order.findByPk(req.params.id);
     if (!order) {
       return res.status(404).json({ error: 'Order not found' });

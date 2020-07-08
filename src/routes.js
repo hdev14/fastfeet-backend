@@ -9,6 +9,7 @@ import auth from './app/middlewares/auth';
 // VALIDATORS
 import SessionValidator from './app/validators/SessionValidator';
 import RecipientValidator from './app/validators/RecipientValidator';
+import OrderValidator from './app/validators/OrderValidator';
 
 // CONTROLLERS
 import SessionController from './app/controllers/SessionController';
@@ -61,8 +62,8 @@ routes.delete('/deliveryman/:id', DeliverymanController.delete);
 
 routes.get('/orders', OrderController.index);
 routes.get('/orders/:id', OrderController.show);
-routes.post('/orders', OrderController.store);
-routes.put('/orders/:id', OrderController.update);
+routes.post('/orders', OrderValidator.store, OrderController.store);
+routes.put('/orders/:id', OrderValidator.update, OrderController.update);
 routes.delete('/orders/:id', OrderController.delete);
 
 routes.post('/files', upload.single('file'), FileController.store);
