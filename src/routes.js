@@ -8,6 +8,7 @@ import auth from './app/middlewares/auth';
 
 // VALIDATORS
 import SessionValidator from './app/validators/SessionValidator';
+import RecipientValidator from './app/validators/RecipientValidator';
 
 // CONTROLLERS
 import SessionController from './app/controllers/SessionController';
@@ -44,8 +45,12 @@ routes.use(auth);
 
 routes.get('/recipients', RecipientController.index);
 routes.get('/recipients/:id', RecipientController.show);
-routes.post('/recipients', RecipientController.store);
-routes.put('/recipients/:id', RecipientController.update);
+routes.post('/recipients', RecipientValidator.store, RecipientController.store);
+routes.put(
+  '/recipients/:id',
+  RecipientValidator.update,
+  RecipientController.update
+);
 routes.delete('/recipients/:id', RecipientController.destroy);
 
 routes.get('/deliveryman', DeliverymanController.index);
