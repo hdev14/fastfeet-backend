@@ -91,7 +91,7 @@ class DeliveriesController {
         order.start_date = this.withdrawOrder(currentDate, id) && currentDate;
       } catch (err) {
         return res.status(401).json({
-          error: err.message
+          message: err.message
         });
       }
     } else if (op === 'end') {
