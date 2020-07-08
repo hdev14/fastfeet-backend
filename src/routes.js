@@ -6,6 +6,9 @@ import multerConfig from './config/multer';
 // MIDDLEWARES
 import auth from './app/middlewares/auth';
 
+// VALIDATORS
+import SessionValidator from './app/validators/SessionValidator';
+
 // CONTROLLERS
 import SessionController from './app/controllers/SessionController';
 import RecipientController from './app/controllers/RecipientController';
@@ -19,7 +22,7 @@ import ProblemController from './app/controllers/ProblemController';
 const routes = Router();
 const upload = multer(multerConfig);
 
-routes.post('/sessions', SessionController.store);
+routes.post('/sessions', SessionValidator.store, SessionController.store);
 
 routes.get('/deliveryman/:id/deliveries', DeliveriesController.index);
 routes.put(
