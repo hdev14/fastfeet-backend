@@ -87,40 +87,13 @@ class DeliveriesController {
     const currentDate = new Date();
 
     if (op === 'start') {
-      const withdrawalStartDate = setSeconds(
-        setMinutes(setHours(currentDate, 8), 0),
-        0
-      );
-      const withdrawalEndDate = setSeconds(
-        setMinutes(setHours(currentDate, 23), 0),
-        0
-      );
-      const isValidDate =
-        isAfter(currentDate, withdrawalStartDate) &&
-        isBefore(currentDate, withdrawalEndDate);
-
-      if (!isValidDate) {
-        return res
-          .status(401)
-          .json({ error: "It's only can withdraw between 08:00 and 18:00" });
+      try {
+        order.start_date = this.withdrawOrder(currentDate, id) && currentDate;
+      } catch (err) {
+        return res.status(401).json({
+          error: err.message
+        });
       }
-
-      const numberWithdrawnOrders = await Order.findAll({
-        where: {
-          deliveryman_id: id,
-          start_date: {
-            [Op.ne]: null
-          }
-        }
-      });
-
-      if (numberWithdrawnOrders.length === 5) {
-        return res
-          .status(401)
-          .json({ error: "It's only can withdraw 5 orders for day" });
-      }
-
-      order.start_date = currentDate;
     } else if (op === 'end') {
       if (!req.file) {
         return res.status(400).json({ error: 'Signature is required' });
@@ -136,6 +109,32 @@ class DeliveriesController {
     order.save();
 
     return res.json(order);
+  }
+
+  async withdrawOrder(date, deliveryman_id) {
+    const withdrawalStartDate = setSeconds(setMinutes(setHours(date, 8), 0), 0);
+    const withdrawalEndDate = setSeconds(setMinutes(setHours(date, 23), 0), 0);
+    const isValidDate =
+      isAfter(date, withdrawalStartDate) && isBefore(date, withdrawalEndDate);
+
+    if (!isValidDate) {
+      throw new Error("It's only can withdraw between 08:00 and 18:00");
+    }
+
+    const numberWithdrawnOrders = await Order.findAll({
+      where: {
+        deliveryman_id,
+        start_date: {
+          [Op.ne]: null
+        }
+      }
+    });
+
+    if (numberWithdrawnOrders.length === 5) {
+      throw new Error("It's only can withdraw 5 orders for day");
+    }
+
+    return true;
   }
 }
 
