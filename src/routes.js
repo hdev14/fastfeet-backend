@@ -10,6 +10,7 @@ import auth from './app/middlewares/auth';
 import SessionValidator from './app/validators/SessionValidator';
 import RecipientValidator from './app/validators/RecipientValidator';
 import OrderValidator from './app/validators/OrderValidator';
+import DeliveryProblemValidator from './app/validators/DeliveryProblemValidator';
 
 // CONTROLLERS
 import SessionController from './app/controllers/SessionController';
@@ -34,7 +35,11 @@ routes.put(
 );
 
 routes.get('/delivery/:order_id/problems', DeliveryProblemController.index);
-routes.post('/delivery/:order_id/problems', DeliveryProblemController.store);
+routes.post(
+  '/delivery/:order_id/problems',
+  DeliveryProblemValidator.store,
+  DeliveryProblemController.store
+);
 
 routes.get('/delivery/problem', ProblemController.index);
 routes.delete(
