@@ -1,4 +1,3 @@
-import * as Yup from 'yup';
 import { Op } from 'sequelize';
 
 import Queue from '../../lib/Queue';
@@ -70,58 +69,35 @@ class OrderController {
   }
 
   async store(req, res) {
-    const schema = Yup.object().shape({
-      recipient_id: Yup.number().integer(),
-      deliveryman_id: Yup.number().integer(),
-      product: Yup.string().required()
-    });
+    const { recipient_id, deliveryman_id } = req.body;
+    const deliverymanExists = await Deliveryman.findByPk(deliveryman_id);
+    const recipientExists = await Recipient.findByPk(recipient_id);
 
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails' });
+    if (!(deliverymanExists && recipientExists)) {
+      return res
+        .status(401)
+        .json({ error: 'Deliveryman or Recipient not found' });
     }
 
-    const { id, recipient_id, deliveryman_id, product } = await Order.create(
-      req.body
-    );
-
-    const { name, email } = await Deliveryman.findByPk(deliveryman_id);
-    const {
-      name: destinatary_name,
-      street,
-      number,
-      complement,
-      state,
-      city,
-      cep
-    } = await Recipient.findByPk(recipient_id);
+    const order = await Order.create(req.body);
 
     await Queue.addJob(NewDelivery.key, {
-      to: `${name} <${email}>`,
+      to: `${deliverymanExists.name} <${deliverymanExists.email}>`,
       context: {
-        name: destinatary_name,
-        street,
-        number,
-        complement,
-        state,
-        city,
-        cep
+        name: recipientExists.name,
+        street: recipientExists.street,
+        number: recipientExists.number,
+        complement: recipientExists.complement,
+        state: recipientExists.state,
+        city: recipientExists.city,
+        cep: recipientExists.cep
       }
     });
 
-    return res.json({ id, recipient_id, deliveryman_id, product });
+    return res.json(order);
   }
 
   async update(req, res) {
-    const schema = Yup.object().shape({
-      recipient_id: Yup.number().integer(),
-      deliveryman_id: Yup.number().integer(),
-      product: Yup.string()
-    });
-
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails' });
-    }
-
     const order = await Order.findByPk(req.params.id);
     if (!order) {
       return res.status(404).json({ error: 'Order not found' });
