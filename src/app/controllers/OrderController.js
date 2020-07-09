@@ -69,35 +69,32 @@ class OrderController {
   }
 
   async store(req, res) {
-    const { id, recipient_id, deliveryman_id, product } = await Order.create(
-      req.body
-    );
+    const { recipient_id, deliveryman_id } = req.body;
+    const deliverymanExists = await Deliveryman.findByPk(deliveryman_id);
+    const recipientExists = await Recipient.findByPk(recipient_id);
 
-    const { name, email } = await Deliveryman.findByPk(deliveryman_id);
-    const {
-      name: destinatary_name,
-      street,
-      number,
-      complement,
-      state,
-      city,
-      cep
-    } = await Recipient.findByPk(recipient_id);
+    if (!(deliverymanExists && recipientExists)) {
+      return res
+        .status(401)
+        .json({ error: 'Deliveryman or Recipient not found' });
+    }
+
+    const order = await Order.create(req.body);
 
     await Queue.addJob(NewDelivery.key, {
-      to: `${name} <${email}>`,
+      to: `${deliverymanExists.name} <${deliverymanExists.email}>`,
       context: {
-        name: destinatary_name,
-        street,
-        number,
-        complement,
-        state,
-        city,
-        cep
+        name: recipientExists.name,
+        street: recipientExists.street,
+        number: recipientExists.number,
+        complement: recipientExists.complement,
+        state: recipientExists.state,
+        city: recipientExists.city,
+        cep: recipientExists.cep
       }
     });
 
-    return res.json({ id, recipient_id, deliveryman_id, product });
+    return res.json(order);
   }
 
   async update(req, res) {
