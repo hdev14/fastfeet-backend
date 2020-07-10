@@ -1,12 +1,19 @@
+import CancelDelivery from '../jobs/CancelDelivery';
+import Queue from '../../lib/Queue';
+import Cache from '../../storage/Cache';
+
 import DeliveryProblem from '../models/DeliveryProblem';
 import Order from '../models/Order';
 import Deliveryman from '../models/Deliveryman';
 
-import CancelDelivery from '../jobs/CancelDelivery';
-import Queue from '../../lib/Queue';
-
 class ProblemController {
   async index(req, res) {
+    const cached = await Cache.get('problems');
+
+    if (cached) {
+      return res.json(cached);
+    }
+
     const problems = await DeliveryProblem.findAll({
       include: [
         {
@@ -16,6 +23,9 @@ class ProblemController {
         }
       ]
     });
+
+    await Cache.set('problems', problems);
+
     return res.json(problems);
   }
 

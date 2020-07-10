@@ -2,6 +2,7 @@ import { Op } from 'sequelize';
 
 import Queue from '../../lib/Queue';
 import NewDelivery from '../jobs/NewDelivery';
+import Cache from '../../storage/Cache';
 
 import Order from '../models/Order';
 import Recipient from '../models/Recipient';
@@ -80,6 +81,7 @@ class OrderController {
     }
 
     const order = await Order.create(req.body);
+    await Cache.invalidate('orders');
 
     await Queue.addJob(NewDelivery.key, {
       to: `${deliverymanExists.name} <${deliverymanExists.email}>`,
@@ -107,6 +109,8 @@ class OrderController {
       req.body
     );
 
+    await Cache.invalidate('orders');
+
     return res.json({ id, recipient_id, deliveryman_id, product });
   }
 
@@ -119,6 +123,8 @@ class OrderController {
 
     order.canceled_at = new Date();
     await order.save();
+
+    await Cache.invalidate('orders');
 
     return res.send();
   }
