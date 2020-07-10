@@ -5,6 +5,16 @@ import Order from '../models/Order';
 
 class DeliveryProblemController {
   async index(req, res) {
+    const { order_id } = req.params;
+
+    const cacheKey = `delivery:${order_id}:problems`;
+
+    const cached = await Cache.get(cacheKey);
+
+    if (cached) {
+      return res.json(cached);
+    }
+
     const deliveryProblems = await DeliveryProblem.findAll({
       where: {
         delivery_id: req.params.order_id
@@ -17,6 +27,9 @@ class DeliveryProblemController {
         }
       ]
     });
+
+    await Cache.set(cacheKey, deliveryProblems);
+
     return res.json(deliveryProblems);
   }
 
@@ -36,6 +49,7 @@ class DeliveryProblemController {
     });
 
     await Cache.invalidate('problems');
+    await Cache.invalidate(`delivery:${order_id}`);
 
     return res.json(deliveryProblem);
   }
