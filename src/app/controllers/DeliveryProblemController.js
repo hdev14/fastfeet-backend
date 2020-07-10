@@ -1,6 +1,8 @@
 import DeliveryProblem from '../models/DeliveryProblem';
 import Order from '../models/Order';
 
+import Cache from '../../storage/Cache';
+
 class DeliveryProblemController {
   async index(req, res) {
     const deliveryProblems = await DeliveryProblem.findAll({
@@ -32,6 +34,8 @@ class DeliveryProblemController {
       delivery_id: order_id,
       description: req.body.description
     });
+
+    await Cache.invalidate('problems');
 
     return res.json(deliveryProblem);
   }
