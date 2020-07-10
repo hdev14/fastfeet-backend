@@ -1,7 +1,7 @@
+import Cache from '../../storage/Cache';
+
 import DeliveryProblem from '../models/DeliveryProblem';
 import Order from '../models/Order';
-
-import Cache from '../../storage/Cache';
 
 class DeliveryProblemController {
   async index(req, res) {

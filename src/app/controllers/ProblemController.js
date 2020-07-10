@@ -1,10 +1,10 @@
-import DeliveryProblem from '../models/DeliveryProblem';
-import Order from '../models/Order';
-import Deliveryman from '../models/Deliveryman';
-
 import CancelDelivery from '../jobs/CancelDelivery';
 import Queue from '../../lib/Queue';
 import Cache from '../../storage/Cache';
+
+import DeliveryProblem from '../models/DeliveryProblem';
+import Order from '../models/Order';
+import Deliveryman from '../models/Deliveryman';
 
 class ProblemController {
   async index(req, res) {
